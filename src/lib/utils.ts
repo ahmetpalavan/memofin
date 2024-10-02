@@ -33,3 +33,5 @@ export function constructMetadata({
     metadataBase: new URL('https://coverit-up.vercel.app/'),
   };
 }
+
+export type PropsWithClassName<T = {}> = T & { className?: string };
