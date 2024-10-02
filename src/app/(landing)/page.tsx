@@ -1,11 +1,20 @@
 import { MessageCircleMore, Radio } from 'lucide-react';
 import Image from 'next/image';
+import { Suspense } from 'react';
+import { AuthButtons } from '~/components/buttons/auth-buttons';
 import { GetStartedButton } from '~/components/buttons/get-started-button';
+import { AuthLoader } from '~/components/loader';
 import { AspectRatio } from '~/components/ui/aspect-ratio';
+
+export const dynamic = "force-dynamic"
 
 export default function Home() {
   return (
     <main className='px-4 flex flex-col min-h-screen items-start bg-gradient-to-br from-[#f0f9f4] to-[#e6f4f1]'>
+      <Suspense fallback={<AuthLoader className='ml-auto mt-5' />}>
+        <AuthButtons className='ml-auto mt-5' />
+      </Suspense>
+
       <div className='relative mx-auto w-full flex flex-col items-center gap-y-8 mt-10 lg:mt-16'>
         <Headline />
         <GetStartedButton />
