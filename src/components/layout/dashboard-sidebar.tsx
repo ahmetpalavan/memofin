@@ -64,7 +64,7 @@ export const DashboardSidebarContent = () => {
   const pathname = usePathname();
   const router = useRouter();
   return (
-    <div className='flex flex-col h-full py-8 px-3'>
+    <div className='flex flex-col h-full py-6 px-3'>
       <nav className='flex flex-col gap-2'>
         {sidebarItems.map((item) => (
           <button key={item.route} onClick={() => router.replace(item.route)}>

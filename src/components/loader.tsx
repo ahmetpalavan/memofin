@@ -1,12 +1,12 @@
 import BeatLoader from 'react-spinners/BeatLoader';
 import { Skeleton } from './ui/skeleton';
 import { cn, PropsWithClassName } from '~/lib/utils';
-import { blue } from 'tailwindcss/colors';
+import { blue, green } from 'tailwindcss/colors';
 
 export const Loader = () => {
   return (
     <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
-      <BeatLoader color={blue[500]} size={16} />
+      <BeatLoader color={green[500]} size={16} />
     </div>
   );
 };
