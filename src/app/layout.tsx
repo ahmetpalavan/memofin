@@ -2,6 +2,7 @@ import localFont from 'next/font/local';
 import { constructMetadata } from '~/lib/utils';
 import './globals.css';
 import { Toaster } from '~/components/ui/toaster';
+import QueryProvider from '~/providers/query-client';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -26,7 +27,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${geistMono.className} ${geistSans.className} antialiased h-full bg-zinc-100`}
       >
-        {children}
+        <QueryProvider>{children}</QueryProvider>
         <Toaster />
       </body>
     </html>
