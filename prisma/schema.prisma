@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,9 +9,114 @@ datasource db {
 }
 
 model User {
-  id        String   @id @unique
-  email     String   @unique
-  name      String   @db.VarChar(255)
-  color     String   @db.VarChar(255)
-  createdAt DateTime @default(now())
+  id             String             @id @unique // this is the same id provided by Kinde
+  email          String             @unique
+  createdAt      DateTime           @default(now())
+  name           String             @db.VarChar(255)
+  color          String             @db.VarChar(255)
+  events         Event[]            @relation("owner")
+  participations EventParticipant[]
+  questions      Question[]
+  upvotes        QuestionUpVote[]
+  pollVotes      PollVote[]
+  bookmarks      Event[]
+}
+
+enum NotificationType {
+  NEW_QUESTION
+  QUESTION_UPVOTE
+  QUESTION_RESOLVED
+  QUESTION_PINNED
+  POLL_CLOSED
+}
+
+model Event {
+  id               String             @id @default(cuid()) @map("_id")
+  name             String             @db.VarChar(100)
+  slug             String             @db.VarChar(255)
+  shortDescription String?            @db.VarChar(255)
+  createdAt        DateTime           @default(now())
+  participants     EventParticipant[]
+  questions        Question[]
+  polls            Poll[]
+  bookmarkedBy     User[]
+
+  owner   User   @relation("owner", fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  ownerId String
+
+  @@unique([slug, ownerId])
+  @@index([slug, ownerId])
+}
+
+model EventParticipant {
+  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  eventId String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String
+
+  @@id([eventId, userId])
+}
+
+model Question {
+  id         String           @id @default(cuid())
+  createdAt  DateTime         @default(now())
+  body       String           @db.VarChar(2500)
+  isPinned   Boolean          @default(false)
+  isResolved Boolean          @default(false)
+  upvotes    QuestionUpVote[]
+
+  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  eventId String
+
+  author   User   @relation(fields: [authorId], references: [id])
+  authorId String
+}
+
+model QuestionUpVote {
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  questionId String
+
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  authorId String
+
+  @@id([authorId, questionId])
+}
+
+model Poll {
+  id        String       @id @default(cuid())
+  createdAt DateTime     @default(now())
+  body      String       @db.VarChar(500)
+  isLive    Boolean      @default(true)
+  options   PollOption[]
+  votes     PollVote[]
+
+  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  eventId String
+}
+
+model PollOption {
+  id    String     @id @default(cuid())
+  index Int
+  body  String     @db.VarChar(100)
+  votes PollVote[]
+
+  poll   Poll   @relation(fields: [pollId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  pollId String
+
+  @@unique([pollId, index])
+  @@index([pollId, index])
+}
+
+model PollVote {
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  authorId String
+
+  pollOption   PollOption @relation(fields: [pollOptionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  pollOptionId String
+
+  poll   Poll   @relation(fields: [pollId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  pollId String
+
+  @@id([authorId, pollId]) // an user can only vote a single poll option
 }
