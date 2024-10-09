@@ -14,6 +14,6 @@ export default {
   dashboard: '/dashboard',
   account: '/dashboard/account',
   bookmarked: '/dashboard/bookmarks',
-  event: ({ eventSlug, ownerId }: EventRouteParams) => `/events/${ownerId}/${eventSlug}`,
-  eventPolls: ({ eventSlug, ownerId }: EventRouteParams) => `/events/${ownerId}/${eventSlug}/polls`,
+  event: ({ ownerId, eventSlug }: EventRouteParams) => `/events/${ownerId}/${eventSlug}`,
+  eventPolls: ({ ownerId, eventSlug }: EventRouteParams) => `/events/${ownerId}/${eventSlug}/polls`,
 } as const;
