@@ -1,6 +1,6 @@
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { getUserInfo } from '~/lib/server/get-user-info';
-import { onlyDateFormatter } from '~/lib/utils/date-utils';
+import { onlyDateFormatter } from '~/utils/date-utils';
 
 const AccountPage = async () => {
   const kindeUser = await getKindeServerSession().getUser();

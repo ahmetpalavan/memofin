@@ -74,14 +74,16 @@ const EventPageLayout = async ({ children, params: { ownerId, eventSlug } }: Pro
         </div>
       </div>
 
-      <div className='w-full flex flex-1 h-full overflow-auto flex-col lg:flex-row gap-x-4 pt-6'>
+      <div className='w-full flex flex-1 overflow-auto flex-col lg:flex-row gap-x-4 pt-6'>
         <EventTabsNavigation className='rounded-t-md lg:hidden' ownerId={ownerId} eventSlug={eventSlug} />
-        <EventFloatingSidebar
-          eventSlug={eventSlug}
-          ownerId={ownerId}
-          questionsCount={event._count.questions}
-          pollsCount={event._count.polls}
-        />
+        <div className='hidden lg:block lg:pb-10'>
+          <EventFloatingSidebar
+            eventSlug={eventSlug}
+            ownerId={ownerId}
+            questionsCount={event._count.questions}
+            pollsCount={event._count.polls}
+          />
+        </div>
         <div className='w-full h-full overflow-auto pb-4'>
           <ScrollArea className='relative h-full bg-white drop-shadow-md border px-2.5 py-4 rounded-b-lg lg:rounded-lg lg:p-6'>
             {children}
