@@ -1,9 +1,13 @@
+'use client';
+
 import { Event, User } from '@prisma/client';
 import { QuestionDetail } from '~/lib/prisma/validators/question-validator';
 import { cn, PropsWithClassName } from '~/lib/utils';
 import { QuestionsOrderBy } from '~/utils/question-utils';
 import { NoContent } from './illustrations';
 import { Question } from './question';
+import { CreateQuestionForm } from './form/create-question-form';
+import { useState } from 'react';
 
 type Props = PropsWithClassName<{
   initialQuestions: QuestionDetail[];
@@ -14,9 +18,18 @@ type Props = PropsWithClassName<{
 }>;
 
 export const OpenQuestions = async ({ initialQuestions, ownerId, eventSlug, orderBy, questionId, className }: Props) => {
+  const [questions, setQuestions] = useState<QuestionDetail[]>(initialQuestions);
   const hasFilters = !!questionId;
   return (
     <div className={cn('space-y-8 pb-10', className)}>
+      {!hasFilters && (
+        <CreateQuestionForm
+          eventSlug={eventSlug}
+          onSuccess={(data) => setQuestions([data, ...questions])}
+          ownerId={ownerId}
+          key={Date.now()}
+        />
+      )}
       {initialQuestions.length === 0 ? (
         <NoContent>
           <span className={cn('text-center text-lg font-medium text-muted-foreground', hasFilters ? 'mt-5' : 'mt-0')}>

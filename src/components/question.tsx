@@ -9,6 +9,7 @@ import { defaultDateFormatter } from '~/utils/date-utils';
 import { UserAvatar } from './user-avatar';
 import { QuestionVoteButton } from './buttons/question-vote-button';
 import { QuestionOptionsMenu } from './menu';
+import { useQuestionPinned, useToggleResolved, useUpdateQuestion } from '~/hooks/use-question';
 
 type Props = {
   question: QuestionDetail;
@@ -23,7 +24,22 @@ export const Question = ({ question }: Props) => {
   const isAuthor = user?.id === author.id;
   const isAdmin = question.event.ownerId === user?.id;
 
-  const { body, isPinned, isResolved } = question;
+  const { body } = question;
+
+  const { isPinned, togglePin } = useQuestionPinned({
+    isPinned: question.isPinned,
+    questionId: question.id,
+  });
+
+  const { isResolved, toggleResolved } = useToggleResolved({
+    questionId: question.id,
+    isResolved: question.isResolved,
+  });
+
+  const { updateBody, newBody } = useUpdateQuestion({
+    body: question.body,
+    questionId: question.id,
+  });
 
   return (
     <div className={cn('border rounded-xl drop-shadow-md bg-white p-4 lg:p-6', isResolved && 'border-primary bg-primary/10')}>
@@ -56,8 +72,8 @@ export const Question = ({ question }: Props) => {
                 isAdmin={isAdmin}
                 isEditing={isEditing}
                 toggleEditing={() => setIsEditing((prev) => !prev)}
-                onPinChange={() => {}}
-                onResolveChange={() => {}}
+                onPinChange={togglePin}
+                onResolveChange={toggleResolved}
                 className={cn('ml-auto text-muted-foreground', isAuthor && 'hover:bg-primary/10')}
               />
             )}
