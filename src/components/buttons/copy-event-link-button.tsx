@@ -5,7 +5,7 @@ import copy from 'copy-to-clipboard';
 import { Copy } from 'lucide-react';
 import { useCallback } from 'react';
 import { toast } from '~/hooks/use-toast';
-import { getEventLink } from '~/lib/utils/event-utils';
+import { getEventLink } from '~/utils/event-utils';
 import { Button } from '../ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 

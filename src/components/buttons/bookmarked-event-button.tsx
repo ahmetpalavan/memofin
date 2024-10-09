@@ -9,6 +9,7 @@ import { toast } from '~/hooks/use-toast';
 import { EventDetail } from '~/lib/prisma/validators/event-validator';
 import { Button } from '../ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { useParticipantView } from '~/hooks/use-participant-view';
 
 interface Props {
   event: EventDetail;
@@ -19,20 +20,11 @@ export const BookmarkedEventButton = ({ event }: Props) => {
 
   const [isBookmarked, setIsBookmarked] = useState(false);
 
-  const isParticipantView = false;
-
-  if (isParticipantView) {
-    return null;
-  }
+  const isParticipantView = useParticipantView();
 
   useEffect(() => {
     setIsBookmarked(event.bookmarkedBy.some((bookmarkUser) => bookmarkUser.id === user?.id));
   }, [event.bookmarkedBy, user?.id]);
-
-  const handleBookmark = useCallback(() => {
-    performBookmark();
-    toggleClientBookmark();
-  }, []);
 
   const performBookmark = useCallback(() => {
     debounce(
@@ -56,6 +48,15 @@ export const BookmarkedEventButton = ({ event }: Props) => {
       description: wasBookmarked ? 'Event removed from bookmarks!' : 'Event added to bookmarks!',
     });
   };
+
+  const handleBookmark = useCallback(() => {
+    performBookmark();
+    toggleClientBookmark();
+  }, []);
+
+  if (isParticipantView) {
+    return null;
+  }
 
   if (!user) {
     return (
