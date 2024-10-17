@@ -2,10 +2,11 @@ import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
 import { Question } from '@prisma/client';
 import debounce from 'lodash.debounce';
 import { useAction } from 'next-safe-action/hooks';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { updateQuestionAction } from '~/lib/actions/update-question.action';
 import { QuestionDetail } from '~/lib/prisma/validators/question-validator';
 import { toast } from './use-toast';
+import { voteQuestionAction } from '~/lib/actions/vote-question.action';
 
 type Props = {
   isPinned: boolean;
@@ -96,6 +97,15 @@ export const useVote = ({ questionId, totalVotes: initialVotes, upvotes }: VoteP
     totalVotes: initialVotes,
   });
 
+  const { execute } = useAction(voteQuestionAction, {
+    onError: (error) => {
+      console.error(error);
+
+      toggleClientVote();
+    },
+    onSuccess: () => console.log('success voting!'),
+  });
+
   useEffect(() => {
     setClientState({
       isUpvoted: upvotes.some((u) => u.authorId === user?.id),
@@ -111,33 +121,59 @@ export const useVote = ({ questionId, totalVotes: initialVotes, upvotes }: VoteP
   }, []);
 
   const handleVote = useCallback(() => {
-    performVote();
-
     toggleClientVote();
+    performVote();
   }, [toggleClientVote]);
 
-  const performVote = useCallback(() => {
+  const performVote = useCallback(
     debounce(
-      async () => {
-        console.log('Voting...');
+      () => {
+        execute({ questionId });
       },
       1000,
-      {
-        leading: false,
-        trailing: true,
-      }
-    );
-  }, [questionId]);
+      { leading: false, trailing: true }
+    ),
+    [questionId]
+  );
 
   return { isUpvoted, totalVotes, handleVote, toggleClientVote };
 };
 
 export const useUpdateQuestion = ({ body, questionId }: { questionId: Question['id']; body: Question['body'] }) => {
+  const lastValidBody = useRef(body);
   const [newBody, setNewBody] = useState(body);
+
+  const { execute, isExecuting } = useAction(updateQuestionAction, {
+    onSuccess: ({ input }) => {
+      console.log('Success');
+
+      lastValidBody.current = input.body!;
+      toast({
+        title: 'Success',
+        description: 'Question updated',
+      });
+    },
+
+    onError: (error) => {
+      console.log('Error');
+      toast({
+        title: "Couldn't update question",
+        variant: 'destructive',
+        description: 'Please try again later',
+      });
+
+      setNewBody(lastValidBody.current);
+    },
+  });
 
   const updateBody = useCallback((newBody: string) => {
     setNewBody(newBody);
+
+    execute({
+      questionId,
+      body: newBody,
+    });
   }, []);
 
-  return { newBody, updateBody };
+  return { newBody, updateBody, isExecuting };
 };

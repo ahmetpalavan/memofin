@@ -2,7 +2,7 @@
 
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
 import { CheckCircle, EllipsisVertical, Pin } from 'lucide-react';
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { QuestionDetail } from '~/lib/prisma/validators/question-validator';
 import { cn } from '~/lib/utils';
 import { defaultDateFormatter } from '~/utils/date-utils';
@@ -10,6 +10,10 @@ import { UserAvatar } from './user-avatar';
 import { QuestionVoteButton } from './buttons/question-vote-button';
 import { QuestionOptionsMenu } from './menu';
 import { useQuestionPinned, useToggleResolved, useUpdateQuestion } from '~/hooks/use-question';
+import { TextareaWithCounter } from './textarea-with-counter';
+import { question as questionValidator } from '~/validation/constant';
+import { Button } from './ui/button';
+import { questionBodySchema } from '~/validation/question-schema';
 
 type Props = {
   question: QuestionDetail;
@@ -19,6 +23,8 @@ export const Question = ({ question }: Props) => {
   const { user } = useKindeBrowserClient();
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
+
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const { author, createdAt } = question;
   const isAuthor = user?.id === author.id;
@@ -36,10 +42,26 @@ export const Question = ({ question }: Props) => {
     isResolved: question.isResolved,
   });
 
-  const { updateBody, newBody } = useUpdateQuestion({
+  const {
+    updateBody,
+    newBody,
+    isExecuting: isUpdatingBody,
+  } = useUpdateQuestion({
     body: question.body,
     questionId: question.id,
   });
+
+  const handleBodyChange = useCallback(() => {
+    const rowBodyValue = textareaRef.current?.value;
+
+    const parsedBody = questionBodySchema.safeParse(rowBodyValue);
+
+    if (parsedBody.success) {
+      const newBody = parsedBody.data;
+      setIsEditing(false);
+      updateBody(newBody);
+    }
+  }, [updateBody]);
 
   return (
     <div className={cn('border rounded-xl drop-shadow-md bg-white p-4 lg:p-6', isResolved && 'border-primary bg-primary/10')}>
@@ -71,7 +93,7 @@ export const Question = ({ question }: Props) => {
                 isAuthor={isAuthor}
                 isAdmin={isAdmin}
                 isEditing={isEditing}
-                toggleEditing={() => setIsEditing((prev) => !prev)}
+                toggleEditingMode={() => setIsEditing(true)}
                 onPinChange={togglePin}
                 onResolveChange={toggleResolved}
                 className={cn('ml-auto text-muted-foreground', isAuthor && 'hover:bg-primary/10')}
@@ -80,12 +102,28 @@ export const Question = ({ question }: Props) => {
           </div>
           {!isEditing && <div className='mt-5 ml-3 whitespace-pre-wrap text-sm'>{body}</div>}
           {isEditing && (
-            <form className='mt-5'>
-              <textarea className='w-full h-20 p-2 border rounded-lg' defaultValue={body} />
-              <div className='flex justify-end mt-2'>
-                <button type='submit' className='btn-primary'>
+            <form>
+              <TextareaWithCounter
+                ref={textareaRef}
+                className='mt-3 min-h-24'
+                defaultValue={body}
+                autoFocus
+                maxLength={questionValidator.maxLength}
+              />
+              <div className='flex items-center gap-x-2 mt-3'>
+                <Button type='button' variant='outline' onClick={handleBodyChange} disabled={isUpdatingBody}>
                   Save
-                </button>
+                </Button>
+                <Button
+                  type='button'
+                  variant='outline'
+                  onClick={() => {
+                    setIsEditing(false);
+                  }}
+                  disabled={isUpdatingBody}
+                >
+                  Cancel
+                </Button>
               </div>
             </form>
           )}
