@@ -7,7 +7,7 @@ import { Textarea, TextareaProps } from './ui/textarea';
 type Props = PropsWithClassName<TextareaProps>;
 
 export const TextareaWithCounter = forwardRef<HTMLTextAreaElement, Props>(
-  ({ className, defaultValue = '', maxLength = 1000, autoComplete = 'off', onChange, autoFocus = false, ...props }, forwardRef) => {
+  ({ className, defaultValue = '', maxLength = 1000, autoComplete = 'off', onChange, autoFocus = false, ...textAreaProps }, forwardRef) => {
     const [content, setContent] = useState<string>(defaultValue as string);
 
     const onChangeHandler = useCallback(
@@ -28,12 +28,8 @@ export const TextareaWithCounter = forwardRef<HTMLTextAreaElement, Props>(
             className
           )}
           value={content}
-          defaultValue={defaultValue}
-          maxLength={maxLength}
-          autoComplete={autoComplete}
           onChange={onChangeHandler}
-          autoFocus={autoFocus}
-          {...props}
+          {...textAreaProps}
         />
         <div className='flex justify-end text-sm text-primary/60'>
           {content.length}/{maxLength}
