@@ -1,8 +1,11 @@
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
 import { Question } from '@prisma/client';
 import debounce from 'lodash.debounce';
+import { useAction } from 'next-safe-action/hooks';
 import { useCallback, useEffect, useState } from 'react';
+import { updateQuestionAction } from '~/lib/actions/update-question.action';
 import { QuestionDetail } from '~/lib/prisma/validators/question-validator';
+import { toast } from './use-toast';
 
 type Props = {
   isPinned: boolean;
@@ -12,18 +15,68 @@ type Props = {
 export const useQuestionPinned = ({ isPinned: initialPinned, questionId }: Props) => {
   const [isPinned, setIsPinned] = useState<boolean>(initialPinned);
 
+  const { execute, isExecuting } = useAction(updateQuestionAction, {
+    onSuccess: () => {
+      console.log('Success');
+      toast({
+        title: 'Success',
+        description: 'Question pinned',
+      });
+    },
+    onError: () => {
+      console.log('Error');
+      toast({
+        title: "Couldn't vote",
+        variant: 'destructive',
+        description: 'Please try again later',
+      });
+
+      setIsPinned((prev) => !prev);
+    },
+  });
+
   const togglePin = useCallback(() => {
     setIsPinned((prev) => !prev);
+
+    execute({
+      questionId,
+      isPinned: !isPinned,
+    });
   }, []);
 
-  return { isPinned, togglePin };
+  return { isPinned, togglePin, isExecuting };
 };
 
 export const useToggleResolved = ({ questionId, isResolved: initialIsResolved }: { questionId: Question['id']; isResolved: boolean }) => {
   const [isResolved, setIsResolved] = useState(initialIsResolved);
 
+  const { execute, isExecuting } = useAction(updateQuestionAction, {
+    onSuccess: () => {
+      console.log('Success resolved');
+      toast({
+        title: 'Success',
+        description: 'Question resolved',
+      });
+    },
+    onError: () => {
+      console.log('Error');
+      toast({
+        title: "Couldn't vote",
+        variant: 'destructive',
+        description: 'Please try again later',
+      });
+
+      setIsResolved((prev) => !prev);
+    },
+  });
+
   const toggleResolved = useCallback(() => {
     setIsResolved((prev) => !prev);
+
+    execute({
+      questionId,
+      isResolved: !isResolved,
+    });
   }, []);
 
   return { isResolved, toggleResolved };

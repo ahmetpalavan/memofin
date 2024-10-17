@@ -25,5 +25,13 @@ export const getQuestionSchema = z.object({
   questionId: questionIdSchema,
 });
 
+export const updateQuestionSchema = z.object({
+  questionId: questionIdSchema,
+  body: questionBodySchema.optional(),
+  isResolved: z.boolean().optional(),
+  isPinned: z.boolean().optional(),
+});
+
 export type CreateQuestionSchema = z.infer<typeof createQuestionSchema>;
+export type UpdateQuestionSchema = z.infer<typeof updateQuestionSchema>;
 export type GetQuestionSchema = z.infer<typeof getQuestionSchema>;
