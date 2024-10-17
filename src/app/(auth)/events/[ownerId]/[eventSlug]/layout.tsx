@@ -22,12 +22,7 @@ type Props = PropsWithChildren<{
 }>;
 
 const EventPageLayout = async ({ children, params: { ownerId, eventSlug } }: Props) => {
-  const queryClient = new QueryClient();
-
-  const event = await queryClient.fetchQuery({
-    queryKey: ['event', ownerId, eventSlug],
-    queryFn: () => getEventDetail({ eventSlug, ownerId }),
-  });
+  const event = await getEventDetail({ eventSlug, ownerId });
 
   if (!event) {
     return notFound();
