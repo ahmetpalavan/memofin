@@ -17,6 +17,7 @@ export const getEventLivePolls = cache(async ({ ownerId, eventSlug }: Params) =>
         ownerId,
         slug: eventSlug,
       },
+      isLive: true,
     },
     orderBy: {
       createdAt: 'desc',
