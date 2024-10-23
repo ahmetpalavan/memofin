@@ -12,14 +12,17 @@ import { getOptionVotesAsPercentage } from '~/utils/poll-utils';
 import { PollVotersTooltip } from './tooltips/poll-voters-tooltip';
 import { PollOptionMenu } from './menu/poll-option-menu';
 import { ClosePollDialog } from './dialog/close-pool-dialog';
+import { useLivePoll } from '~/hooks/use-poll';
 
 type Props = PropsWithClassName<{
   poll: PollDetails;
 }>;
 
-export const LivePoll = ({ poll, className }: Props) => {
+export const LivePoll = ({ poll: initialPoll, className }: Props) => {
   const { user } = useKindeBrowserClient();
   const [openCloseDialog, setOpenCloseDialog] = useState(false);
+
+  const { poll, voteOption, votePollOptionIndex } = useLivePoll({ poll: initialPoll });
 
   const { isLive, options } = poll;
   const totalVotes = poll._count.votes;
@@ -29,9 +32,6 @@ export const LivePoll = ({ poll, className }: Props) => {
   const isParticipantView = useParticipantView();
 
   const showEndPollButton = isAdmin && !isParticipantView;
-
-  const votedOptionIndex = 0;
-  const votedOption = (optionId: number) => {};
 
   return (
     <>
@@ -64,11 +64,11 @@ export const LivePoll = ({ poll, className }: Props) => {
           {options.map((option) => (
             <PollOptionItem
               key={option.id}
-              isPollClosed={!isLive}
-              isVoted={option.index === votedOptionIndex}
+              isPollClosed={false}
+              isVoted={option.index === votePollOptionIndex}
               option={option}
               totalPollVotes={totalVotes}
-              onVoteChange={() => votedOption(option.index)}
+              onVoteChange={() => voteOption(option.index)}
             />
           ))}
         </div>
