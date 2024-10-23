@@ -3,9 +3,13 @@ import { Plus } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { ClearSearchButton, RefreshButton } from '~/components/buttons';
+import { ClosedPollsList } from '~/components/closed-polls-list';
+import { NoContent } from '~/components/illustrations';
 import { PollsTabNavigation } from '~/components/layout/polls-tab-navigation';
+import { ClosedPoll, LivePoll } from '~/components/live-poll';
 import { Loader } from '~/components/loader';
 import { Button } from '~/components/ui/button';
+import { getEventClosedPolls } from '~/lib/server/get-event-closed-polls';
 import { getEventDetail } from '~/lib/server/get-event-detail';
 import { getEventLivePolls } from '~/lib/server/get-event-live-polls';
 
@@ -76,19 +80,34 @@ type PollsProps = {
 };
 
 const Polls = async ({ ownerId, eventSlug, showClosed, pollId }: PollsProps) => {
-  const showPolls = getEventLivePolls({ ownerId, eventSlug });
+  const showPolls = showClosed ? getEventClosedPolls : getEventLivePolls;
+
+  const polls = await showPolls({
+    eventSlug,
+    ownerId,
+    ...(pollId ? { filters: { pollId } } : {}),
+  });
+
+  if (showClosed) {
+    return <ClosedPollsList initialPolls={polls} ownerId={ownerId} eventSlug={eventSlug} pollId={pollId} className='mt-5' />;
+  }
+
+  if (polls.length === 0) {
+    return (
+      <NoContent className='mt-10'>
+        <div className='text-center'>
+          <h2>No polls found</h2>
+          <p>There are no polls available for this event.</p>
+        </div>
+      </NoContent>
+    );
+  }
 
   return (
-    <div>
-      {/* {showPolls ? (
-        <div>
-          <p>Live Polls</p>
-        </div>
-      ) : (
-        <div>
-          <p>No live polls</p>
-        </div>
-      )} */}
+    <div className='mt-8 space-y-10'>
+      {polls.map((poll) => (
+        <LivePoll key={poll.id} poll={poll} />
+      ))}
     </div>
   );
 };
