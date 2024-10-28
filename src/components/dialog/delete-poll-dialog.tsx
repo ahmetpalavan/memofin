@@ -9,6 +9,9 @@ import {
 import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader } from '../ui/alert-dialog';
 import { cn } from '~/lib/utils';
 import { buttonVariants } from '../ui/button';
+import { useAction } from 'next-safe-action/hooks';
+import { deletePoll } from '~/lib/actions/delete-poll.action';
+import { toast } from '~/hooks/use-toast';
 
 type Props = {
   pollId: Poll['id'];
@@ -16,9 +19,28 @@ type Props = {
 } & AlertDialogProps;
 
 export const DeletePollDialog = ({ pollId, onSucces: handleSuccess, ...props }: Props) => {
-  const isFieldDisabled = false;
-  const isExecuting = false;
-  const handleDelete = async (evt: React.MouseEvent) => {};
+  const { execute, isExecuting } = useAction(deletePoll, {
+    onError: (err) => {
+      toast({
+        title: 'Error',
+        description: err.error.serverError,
+        variant: 'destructive',
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: 'Poll deleted',
+        duration: 5000,
+        description: 'Your poll has been deleted successfully.',
+      });
+      handleSuccess?.();
+    },
+  });
+  const isFieldDisabled = isExecuting;
+  const handleDelete = (evt: React.MouseEvent) => {
+    evt.preventDefault();
+    execute({ pollId });
+  };
 
   return (
     <AlertDialog {...props}>
