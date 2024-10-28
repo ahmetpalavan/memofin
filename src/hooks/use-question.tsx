@@ -139,41 +139,36 @@ export const useVote = ({ questionId, totalVotes: initialVotes, upvotes }: VoteP
   return { isUpvoted, totalVotes, handleVote, toggleClientVote };
 };
 
-export const useUpdateQuestion = ({ body, questionId }: { questionId: Question['id']; body: Question['body'] }) => {
-  const lastValidBody = useRef(body);
-  const [newBody, setNewBody] = useState(body);
+export const useUpdateQuestionBody = ({ questionId, body: initialBody }: { questionId: Question['id']; body: Question['body'] }) => {
+  const lastValidBody = useRef(initialBody);
+  const [body, setBody] = useState(initialBody);
 
   const { execute, isExecuting } = useAction(updateQuestionAction, {
     onSuccess: ({ input }) => {
-      console.log('Success');
+      console.log('success body update!');
 
       lastValidBody.current = input.body!;
-      toast({
-        title: 'Success',
-        description: 'Question updated',
-      });
     },
-
     onError: (error) => {
-      console.log('Error');
+      console.error(error);
+
       toast({
-        title: "Couldn't update question",
+        title: 'Something went wrong',
+        description: 'Failed to update the question body!',
         variant: 'destructive',
-        description: 'Please try again later',
       });
 
-      setNewBody(lastValidBody.current);
+      // revert the optimistic update
+      setBody(lastValidBody.current);
     },
   });
 
-  const updateBody = useCallback((newBody: string) => {
-    setNewBody(newBody);
+  const updateBody = (newBody: string) => {
+    // optimistic update (client)
+    setBody(newBody);
 
-    execute({
-      questionId,
-      body: newBody,
-    });
-  }, []);
+    execute({ questionId, body: newBody });
+  };
 
-  return { newBody, updateBody, isExecuting };
+  return { body, updateBody, isExecuting };
 };
