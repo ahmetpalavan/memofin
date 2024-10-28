@@ -97,7 +97,7 @@ export const useLivePoll = ({ poll: initialPoll }: { poll: PollDetails }) => {
                 options: prevPoll.options.map((option) => {
                   const wasVotedByUser = option.votes.some((vote) => vote.authorId === authorId);
 
-                  if (!wasVotedByUser) {
+                  if (wasVotedByUser) {
                     return {
                       ...option,
                       votes: option.votes.filter((vote) => vote.authorId !== authorId),
@@ -124,7 +124,7 @@ export const useLivePoll = ({ poll: initialPoll }: { poll: PollDetails }) => {
 
   useEffect(() => {
     const votedOptionIndex = initialPoll.options.find((option) => {
-      option.votes.some((vote) => vote.authorId === user?.id);
+      return option.votes.some((vote) => vote.authorId === user?.id);
     })?.index;
 
     setVotePollOptionIndex(votedOptionIndex);
