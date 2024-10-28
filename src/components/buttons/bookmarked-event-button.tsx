@@ -10,6 +10,8 @@ import { EventDetail } from '~/lib/prisma/validators/event-validator';
 import { Button } from '../ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { useParticipantView } from '~/hooks/use-participant-view';
+import { useAction } from 'next-safe-action/hooks';
+import { bookmarkEvent } from '~/lib/actions/bookmark-event.action';
 
 interface Props {
   event: EventDetail;
@@ -22,22 +24,29 @@ export const BookmarkedEventButton = ({ event }: Props) => {
 
   const isParticipantView = useParticipantView();
 
+  const { execute } = useAction(bookmarkEvent, {
+    onError: (err) => {
+      console.error(err);
+
+      toggleClientBookmark();
+    },
+    onSuccess: () => console.log('Success bookmark!'),
+  });
+
   useEffect(() => {
     setIsBookmarked(event.bookmarkedBy.some((bookmarkUser) => bookmarkUser.id === user?.id));
   }, [event.bookmarkedBy, user?.id]);
 
-  const performBookmark = useCallback(() => {
+  const performBookmark = useCallback(
     debounce(
       () => {
-        console.log('debounce');
+        execute({ eventId: event.id });
       },
       1000,
-      {
-        leading: true,
-        trailing: true,
-      }
-    );
-  }, [event.id]);
+      { leading: false, trailing: true }
+    ),
+    [event.id]
+  );
 
   const toggleClientBookmark = () => {
     const wasBookmarked = isBookmarked;

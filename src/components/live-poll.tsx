@@ -109,7 +109,7 @@ export const ClosedPoll = ({ poll, className }: Props) => {
         <div className='inline-flex items-center gap-x-3 ml-auto'>
           <PollVotersTooltip pollTotalVotes={totalVotes} voters={voters} />
 
-          {/* <PollOptionsMenu poll={poll} /> */}
+          <PollOptionMenu poll={poll} />
         </div>
       </div>
 
@@ -120,7 +120,6 @@ export const ClosedPoll = ({ poll, className }: Props) => {
       <div role='list' className='space-y-3 mt-4'>
         {options.map((option) => (
           <PollOptionItem
-            onVoteChange={() => {}}
             key={option.id}
             option={option}
             isVoted={option.index === votedOptionIndex}
@@ -144,7 +143,7 @@ const PollOptionItem = ({
   isVoted,
   option,
   totalPollVotes,
-  onVoteChange,
+  onVoteChange: handleVoteChange,
 }: {
   option: PollDetails['options'][number];
   isVoted: boolean;
@@ -165,7 +164,7 @@ const PollOptionItem = ({
         isVoted && 'ring-green-800 ring-2 ring-opacity-80'
       )}
       disabled={isPollClosed}
-      onClick={() => onVoteChange?.(option.id)}
+      onClick={() => handleVoteChange?.(option.id)}
     >
       <div className='inline-flex items-center gap-x-2'>
         {isVoted ? <CircleCheckBig className='w-5 h-5 stroke-green-800' /> : <Circle className='w-5 h-5 stroke-gray-600' />}
