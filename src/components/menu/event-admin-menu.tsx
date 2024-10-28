@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { Button } from '../ui/button';
 import { DeleteEventDialog } from '../dialog/delete-event-dialog';
 import { useParticipantView } from '~/hooks/use-participant-view';
+import { UpdateEventDialog } from '../dialog/update-event-dialog';
 
 type Props = PropsWithClassName<{
   event: EventDetail;
@@ -50,6 +51,12 @@ export const EventAdminMenu = ({ event, className }: Props) => {
         </DropdownMenuContent>
       </DropdownMenu>
       <DeleteEventDialog eventId={event.id} open={openDeleteDialog} onOpenChange={setOpenDeleteDialog} />
+      <UpdateEventDialog
+        event={event}
+        open={openUpdateDialog}
+        onOpenChange={setOpenUpdateDialog}
+        onSuccess={() => setOpenUpdateDialog(false)}
+      />
     </>
   );
 };
