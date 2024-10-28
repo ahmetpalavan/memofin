@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { ClearSearchButton, RefreshButton } from '~/components/buttons';
 import { ClosedPollsList } from '~/components/closed-polls-list';
+import { NewPollDialog } from '~/components/dialog/new-poll-dialog';
 import { NoContent } from '~/components/illustrations';
 import { PollsTabNavigation } from '~/components/layout/polls-tab-navigation';
 import { ClosedPoll, LivePoll } from '~/components/live-poll';
@@ -50,11 +51,13 @@ const EventPolls = async ({ params: { ownerId, eventSlug }, searchParams }: { pa
           <RefreshButton />
 
           {showNewPollButton && (
-            <Button variant='ghost' className='bg-primary hover:bg-primary/50 space-x-1'>
-              <Plus size={16} />
-              <span>New</span>
-              <span className='lg:inline hidden'>Poll</span>
-            </Button>
+            <NewPollDialog eventId={event.id}>
+              <Button variant='ghost' className='bg-primary hover:bg-primary/50 space-x-1'>
+                <Plus size={16} />
+                <span>New</span>
+                <span className='lg:inline hidden'>Poll</span>
+              </Button>
+            </NewPollDialog>
           )}
         </div>
       </div>
