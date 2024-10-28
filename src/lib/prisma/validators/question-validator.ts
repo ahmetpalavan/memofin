@@ -29,21 +29,17 @@ export const questionDetail = Prisma.validator<Prisma.QuestionDefaultArgs>()({
 
 export const questionOrderBy = (orderBy: QuestionsOrderBy): Prisma.QuestionOrderByWithRelationInput => {
   return match(orderBy)
-    .with('most-popular', () => ({ upvotes: { _count: 'desc' } } as const))
-    .with(
-      'newest',
-      () =>
-        ({
-          createdAt: 'desc',
-        } as const)
-    )
-    .with(
-      'oldest',
-      () =>
-        ({
-          createdAt: 'asc',
-        } as const)
-    )
+    .with('most-popular', () => ({
+      upvotes: {
+        _count: 'desc',
+      } as const,
+    }))
+    .with('newest', () => ({
+      createdAt: 'desc' as const,
+    }))
+    .with('oldest', () => ({
+      createdAt: 'asc' as const,
+    }))
     .exhaustive();
 };
 
