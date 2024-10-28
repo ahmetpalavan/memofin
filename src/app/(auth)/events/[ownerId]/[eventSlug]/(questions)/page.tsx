@@ -55,7 +55,7 @@ const EventQuestionsPage = async ({
       )}
 
       <Suspense key={Date.now()} fallback={<Loader />}>
-        <Questions showResolved={showResolved} ownerId={ownerId} eventSlug={eventSlug} questionId={questionId} orderBy={orderBy} />
+        <Questions ownerId={ownerId} eventSlug={eventSlug} showResolved={showResolved} orderBy={orderBy} questionId={questionId} />
       </Suspense>
     </>
   );
