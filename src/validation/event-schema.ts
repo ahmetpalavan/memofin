@@ -25,3 +25,28 @@ export const shortDescriptionSchema = z
   .max(event.shortDescription.maxLength, {
     message: `Short description must be at most ${event.shortDescription.maxLength} characters`,
   });
+
+export const updateEventSchema = z.object({
+  eventId: eventIdSchema,
+  shortDescription: shortDescriptionSchema,
+});
+
+export const deleteEventSchema = z.object({
+  eventId: eventIdSchema,
+});
+
+export const createEventSchema = z.object({
+  title: z
+    .string()
+    .min(event.name.minLength, {
+      message: `Title must be at least ${event.name.minLength} characters`,
+    })
+    .max(event.name.maxLength, {
+      message: `Title must be at most ${event.name.maxLength} characters`,
+    }),
+  shortDescription: shortDescriptionSchema,
+});
+
+export type CreateEventSchema = z.infer<typeof createEventSchema>;
+export type UpdateEventSchema = z.infer<typeof updateEventSchema>;
+export type DeleteEventSchema = z.infer<typeof deleteEventSchema>;
