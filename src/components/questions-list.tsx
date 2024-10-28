@@ -1,13 +1,19 @@
 'use client';
 
 import { Event, User } from '@prisma/client';
+import { useAction } from 'next-safe-action/hooks';
+import { useSearchParams } from 'next/navigation';
+import { useCallback, useState } from 'react';
+import { getEventOpenQuestionsAction } from '~/lib/actions/get-event-open-question.action';
 import { QuestionDetail } from '~/lib/prisma/validators/question-validator';
 import { cn, PropsWithClassName } from '~/lib/utils';
 import { QuestionsOrderBy } from '~/utils/question-utils';
-import { NoContent } from './illustrations';
-import { Question } from './question';
 import { CreateQuestionForm } from './form/create-question-form';
-import { useState } from 'react';
+import { NoContent } from './illustrations';
+import { InfiniteScrollList } from './infinite-scroll-list';
+import { Question } from './question';
+import { getEventResolvedQuestions } from '~/lib/server/get-event-resolved-questions';
+import { getEventResolvedQuestionsAction } from '~/lib/actions/get-event-resolved-question.action';
 
 type Props = PropsWithClassName<{
   initialQuestions: QuestionDetail[];
@@ -17,9 +23,34 @@ type Props = PropsWithClassName<{
   questionId?: QuestionDetail['id'];
 }>;
 
-export const OpenQuestions = async ({ initialQuestions, ownerId, eventSlug, orderBy, questionId, className }: Props) => {
+export const OpenQuestions = ({ initialQuestions, ownerId, eventSlug, orderBy, questionId, className }: Props) => {
   const [questions, setQuestions] = useState<QuestionDetail[]>(initialQuestions);
+  const searchParams = useSearchParams();
+  console.log('🚀 ~ OpenQuestions ~ searchParams:', searchParams);
+
   const hasFilters = !!questionId;
+
+  const { executeAsync } = useAction(getEventOpenQuestionsAction);
+
+  const fetchMoreOpenQuestions = useCallback(
+    async ({ cursor }: { cursor?: QuestionDetail['id'] }) => {
+      const newQuestions = await executeAsync({
+        cursor,
+        eventSlug,
+        ownerId,
+        orderBy,
+        questionId,
+      });
+
+      if (!newQuestions?.data || newQuestions.data.length === 0) {
+        return [];
+      }
+
+      return newQuestions.data;
+    },
+    [executeAsync, eventSlug, orderBy, ownerId, questionId]
+  );
+
   return (
     <div className={cn('space-y-8 pb-10', className)}>
       {!hasFilters && (
@@ -30,20 +61,49 @@ export const OpenQuestions = async ({ initialQuestions, ownerId, eventSlug, orde
           key={Date.now()}
         />
       )}
-      {initialQuestions.length === 0 ? (
+      {questions.length === 0 ? (
         <NoContent>
-          <span className={cn('text-center text-lg font-medium text-muted-foreground', hasFilters ? 'mt-5' : 'mt-0')}>
-            {hasFilters ? 'No questions found with the applied filters.' : 'No open questions found.'}
-          </span>
+          <span className='tracking-tight font-light mt-3'>No questions has been asked yet.</span>
         </NoContent>
       ) : (
-        initialQuestions.map((question) => <Question key={question.id} question={question} />)
+        <InfiniteScrollList<QuestionDetail>
+          key={`open-${searchParams.toString()}`}
+          items={questions}
+          setItems={setQuestions}
+          renderItem={(question) => <Question key={question.id} question={question} />}
+          fetchMore={fetchMoreOpenQuestions}
+        />
       )}
     </div>
   );
 };
 
-export const ResolvedQuestions = async ({ initialQuestions, ownerId, eventSlug, orderBy, questionId, className }: Props) => {
+export const ResolvedQuestions = ({ initialQuestions, ownerId, eventSlug, orderBy, questionId, className }: Props) => {
+  const [questions, setQuestions] = useState<QuestionDetail[]>(initialQuestions);
+
+  const searchParams = useSearchParams();
+
+  const { executeAsync } = useAction(getEventResolvedQuestionsAction);
+
+  const fetchMoreResolvedQuestions = useCallback(
+    async ({ cursor }: { cursor?: QuestionDetail['id'] }) => {
+      const newQuestions = await executeAsync({
+        cursor,
+        eventSlug,
+        ownerId,
+        orderBy,
+        questionId,
+      });
+
+      if (!newQuestions?.data || newQuestions.data.length === 0) {
+        return [];
+      }
+
+      return newQuestions.data;
+    },
+    [executeAsync, eventSlug, orderBy, ownerId, questionId]
+  );
+
   return (
     <div className={cn('space-y-8 pb-10', className)}>
       {initialQuestions.length === 0 ? (
@@ -51,7 +111,13 @@ export const ResolvedQuestions = async ({ initialQuestions, ownerId, eventSlug, 
           <span className={cn('text-center text-lg font-medium text-muted-foreground', 'mt-0')}>No resolved questions found.</span>
         </NoContent>
       ) : (
-        initialQuestions.map((question) => <Question key={question.id} question={question} />)
+        <InfiniteScrollList<QuestionDetail>
+          key={`resolved-${searchParams.toString()}`}
+          items={questions}
+          setItems={setQuestions}
+          renderItem={(question) => <Question key={question.id} question={question} />}
+          fetchMore={fetchMoreResolvedQuestions}
+        />
       )}
     </div>
   );

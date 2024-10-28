@@ -1,19 +1,19 @@
 'use client';
 
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
-import { CheckCircle, EllipsisVertical, Pin } from 'lucide-react';
-import { useCallback, useRef, useState } from 'react';
+import { CheckCircle, Pin } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { useQuestionPinned, useToggleResolved, useUpdateQuestionBody } from '~/hooks/use-question';
 import { QuestionDetail } from '~/lib/prisma/validators/question-validator';
 import { cn } from '~/lib/utils';
 import { defaultDateFormatter } from '~/utils/date-utils';
-import { UserAvatar } from './user-avatar';
+import { question as questionValidator } from '~/validation/constant';
+import { questionBodySchema } from '~/validation/question-schema';
 import { QuestionVoteButton } from './buttons/question-vote-button';
 import { QuestionOptionsMenu } from './menu';
-import { useQuestionPinned, useToggleResolved, useUpdateQuestion } from '~/hooks/use-question';
 import { TextareaWithCounter } from './textarea-with-counter';
-import { question as questionValidator } from '~/validation/constant';
 import { Button } from './ui/button';
-import { questionBodySchema } from '~/validation/question-schema';
+import { UserAvatar } from './user-avatar';
 
 type Props = {
   question: QuestionDetail;
@@ -30,8 +30,6 @@ export const Question = ({ question }: Props) => {
   const isAuthor = user?.id === author.id;
   const isAdmin = question.event.ownerId === user?.id;
 
-  const { body } = question;
-
   const { isPinned, togglePin } = useQuestionPinned({
     isPinned: question.isPinned,
     questionId: question.id,
@@ -43,25 +41,27 @@ export const Question = ({ question }: Props) => {
   });
 
   const {
+    body,
     updateBody,
-    newBody,
     isExecuting: isUpdatingBody,
-  } = useUpdateQuestion({
-    body: question.body,
+  } = useUpdateQuestionBody({
     questionId: question.id,
+    body: question.body,
   });
 
-  const handleBodyChange = useCallback(() => {
-    const rowBodyValue = textareaRef.current?.value;
+  const handleBodyChange = () => {
+    const rawBodyValue = textareaRef.current?.value;
 
-    const parsedBody = questionBodySchema.safeParse(rowBodyValue);
+    const parsedBody = questionBodySchema.safeParse(rawBodyValue);
 
     if (parsedBody.success) {
       const newBody = parsedBody.data;
+
       setIsEditing(false);
+
       updateBody(newBody);
     }
-  }, [updateBody]);
+  };
 
   return (
     <div className={cn('border rounded-xl drop-shadow-md bg-white p-4 lg:p-6', isResolved && 'border-primary bg-primary/10')}>
