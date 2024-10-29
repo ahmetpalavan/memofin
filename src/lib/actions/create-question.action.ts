@@ -34,6 +34,17 @@ export const createQuestionAction = actionClient
           body,
           authorId: user.id,
           eventId: event.id,
+          ...(event.ownerId !== user.id
+            ? {
+                notification: {
+                  create: {
+                    type: 'NEW_QUESTION',
+                    userId: event.ownerId,
+                    eventId: event.id,
+                  },
+                },
+              }
+            : {}),
         },
         ...questionDetail,
       }),

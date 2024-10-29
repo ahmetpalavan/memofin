@@ -43,6 +43,28 @@ export const updateQuestionAction = actionClient.schema(updateQuestionSchema).ac
       },
       data: fields,
     }),
+    ...[
+      fields.isResolved === true && question.authorId !== user.id
+        ? prisma.notification.create({
+            data: {
+              type: 'QUESTION_RESOLVED',
+              questionId,
+              userId: question.authorId,
+              eventId: question.event.id,
+            },
+          })
+        : [],
+      fields.isPinned === true && question.authorId !== user.id
+        ? prisma.notification.create({
+            data: {
+              type: 'QUESTION_PINNED',
+              questionId,
+              userId: question.authorId,
+              eventId: question.event.id,
+            },
+          })
+        : [],
+    ].flatMap((x) => x),
   ]);
 
   return { questionId, ...fields };

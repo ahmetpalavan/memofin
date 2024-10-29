@@ -1,17 +1,17 @@
 'use server';
 
-import { getPollSchema } from '~/validation/poll-schema';
-import { actionClient } from './safe.action';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
-import { prisma } from '../prisma/client';
 import { revalidatePath } from 'next/cache';
+import { prisma } from '../prisma/client';
+import { actionClient } from './safe.action';
+import { getPollSchema } from '~/validation/poll-schema';
 import routes from '~/config/routes';
 
-export const closePoll = actionClient.schema(getPollSchema).action(async ({ parsedInput: { pollId } }) => {
+export const closePollAction = actionClient.schema(getPollSchema).action(async ({ parsedInput: { pollId } }) => {
   const user = await getKindeServerSession().getUser();
 
   if (!user) {
-    throw new Error('User not found');
+    throw new Error('Not authenticated');
   }
 
   const poll = await prisma.poll.findUnique({
@@ -24,6 +24,7 @@ export const closePoll = actionClient.schema(getPollSchema).action(async ({ pars
           ownerId: true,
         },
       },
+      // retrieve all the voters of the poll
       votes: {
         select: {
           authorId: true,
@@ -33,17 +34,38 @@ export const closePoll = actionClient.schema(getPollSchema).action(async ({ pars
   });
 
   if (!poll) {
-    throw new Error('Poll not found');
+    throw new Error('Poll not found!');
   }
 
+  // check the permission
   if (poll.event.ownerId !== user.id) {
-    throw new Error('You do not have permission to close this poll');
+    throw new Error('You do not have the permission to close this poll.');
   }
 
   await prisma.poll.update({
-    where: { id: pollId },
-    data: { isLive: false },
+    where: {
+      id: pollId,
+    },
+    data: {
+      isLive: false,
+      notification: {
+        createMany: {
+          data: poll.votes
+            .filter(({ authorId }) => authorId !== user.id)
+            .map(({ authorId }) => ({
+              type: 'POLL_CLOSED',
+              userId: authorId,
+              eventId: poll.event.id,
+            })),
+        },
+      },
+    },
   });
 
-  revalidatePath(routes.eventPolls({ eventSlug: poll.event.slug, ownerId: poll.event.ownerId }));
+  revalidatePath(
+    routes.eventPolls({
+      eventSlug: poll.event.slug,
+      ownerId: poll.event.ownerId,
+    })
+  );
 });

@@ -75,6 +75,18 @@ export const voteQuestionAction = actionClient.schema(getQuestionSchema).action(
       },
       update: {},
     }),
+    ...(question.authorId !== user.id
+      ? [
+          prisma.notification.create({
+            data: {
+              type: 'QUESTION_UPVOTE',
+              userId: question.authorId,
+              questionId,
+              eventId: question.eventId,
+            },
+          }),
+        ]
+      : []),
   ]);
 
   return true;
