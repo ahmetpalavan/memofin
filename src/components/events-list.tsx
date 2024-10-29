@@ -18,15 +18,18 @@ export const EventsList = ({ initialEvents }: EventsListProps) => {
 
   const { executeAsync } = useAction(getUserEvent);
 
-  const fetchMoreEvents = useCallback(async ({ cursor }: { cursor?: Event['id'] }) => {
-    const newEvents = await executeAsync({ cursor });
+  const fetchMoreEvents = useCallback(
+    async ({ cursor }: { cursor?: Event['id'] }) => {
+      const newEvents = await executeAsync({ cursor });
 
-    if (!newEvents?.data || newEvents.data.length === 0) {
-      return [];
-    }
+      if (!newEvents?.data || newEvents.data.length === 0) {
+        return [];
+      }
 
-    return newEvents.data;
-  }, []);
+      return newEvents.data;
+    },
+    [executeAsync]
+  );
 
   return (
     <InfiniteScrollList<EventDetail>
@@ -43,15 +46,18 @@ export const BookmarkedEventsList = ({ initialEvents }: EventsListProps) => {
 
   const { executeAsync } = useAction(getBookmarkedEvent);
 
-  const fetchMore = useCallback(async ({ cursor }: { cursor?: Event['id'] }) => {
-    const newEvents = await executeAsync({ cursor });
+  const fetchMore = useCallback(
+    async ({ cursor }: { cursor?: Event['id'] }) => {
+      const newEvents = await executeAsync({ cursor });
 
-    if (!newEvents?.data || newEvents.data.length === 0) {
-      return [];
-    }
+      if (!newEvents?.data || newEvents.data.length === 0) {
+        return [];
+      }
 
-    return newEvents.data;
-  }, []);
+      return newEvents.data;
+    },
+    [executeAsync]
+  );
 
   return (
     <InfiniteScrollList<EventDetail>

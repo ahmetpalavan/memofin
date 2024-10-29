@@ -1,13 +1,12 @@
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
-import { Bell } from 'lucide-react';
 import Link from 'next/link';
 import routes from '~/config/routes';
 import { getUserInfo } from '~/lib/server/get-user-info';
-import { UserAvatar } from '../user-avatar';
-import { cn, PropsWithClassName } from '~/lib/utils';
-import { PublicAuthButtons } from './public-auth-buttons';
 import { getUserNotifications } from '~/lib/server/get-user-notification';
+import { cn, PropsWithClassName } from '~/lib/utils';
 import { NotificationMenu } from '../menu';
+import { UserAvatar } from '../user-avatar';
+import { PublicAuthButtons } from './public-auth-buttons';
 
 export const AuthButtons = async ({ className }: PropsWithClassName) => {
   const kindeUser = await getKindeServerSession().getUser();

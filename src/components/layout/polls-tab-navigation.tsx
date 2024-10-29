@@ -31,7 +31,7 @@ export const PollsTabNavigation = ({ ownerId, eventSlug }: Props) => {
 
       router.replace(`${eventPollsUrl}?${newSearchParams.toString()}`);
     },
-    [router, eventPollsUrl, searchParams]
+    [router, eventPollsUrl]
   );
 
   return (

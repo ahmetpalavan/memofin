@@ -130,6 +130,23 @@ export const useLivePoll = ({ poll: initialPoll }: { poll: PollDetails }) => {
     setVotePollOptionIndex(votedOptionIndex);
   }, [user, initialPoll.options]);
 
+  const performVote = useCallback(
+    debounce(
+      (optionIndex: number) => {
+        executeVote({
+          optionIndex,
+          pollId: poll.id,
+        });
+      },
+      1000,
+      {
+        leading: false,
+        trailing: true,
+      }
+    ),
+    [poll.id]
+  );
+
   const voteOption = useCallback(
     (newVoteOptionIndex: number) => {
       if (!user) {
@@ -181,24 +198,7 @@ export const useLivePoll = ({ poll: initialPoll }: { poll: PollDetails }) => {
 
       performVote(newVoteOptionIndex);
     },
-    [poll, user, votePollOptionIndex, router]
-  );
-
-  const performVote = useCallback(
-    debounce(
-      (optionIndex: number) => {
-        executeVote({
-          optionIndex,
-          pollId: poll.id,
-        });
-      },
-      1000,
-      {
-        leading: false,
-        trailing: true,
-      }
-    ),
-    [poll.id]
+    [poll, user, votePollOptionIndex, router, performVote]
   );
 
   return {

@@ -24,7 +24,7 @@ export const LivePoll = ({ poll: initialPoll, className }: Props) => {
 
   const { poll, voteOption, votePollOptionIndex } = useLivePoll({ poll: initialPoll });
 
-  const { isLive, options } = poll;
+  const { options } = poll;
   const totalVotes = poll._count.votes;
   const voters = poll.votes.map((vote) => vote.author);
 

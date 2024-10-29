@@ -5,7 +5,7 @@ import { useCallback } from 'react';
 import { match } from 'ts-pattern';
 import { questionPageQueryParams } from '~/config/query-param';
 import { QuestionsOrderBy } from '~/utils/question-utils';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 type Props = {
   sortBy: QuestionsOrderBy;

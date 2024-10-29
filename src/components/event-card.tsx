@@ -1,10 +1,9 @@
-import Link from 'next/link';
-import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { cn, PropsWithClassName } from '~/lib/utils';
-import { EventDetail } from '~/lib/prisma/validators/event-validator';
-import routes from '~/config/routes';
 import { Users } from 'lucide-react';
+import Link from 'next/link';
+import routes from '~/config/routes';
+import { EventDetail } from '~/lib/prisma/validators/event-validator';
+import { cn, PropsWithClassName } from '~/lib/utils';
+import { Card, CardContent, CardHeader } from './ui/card';
 
 type Props = PropsWithClassName<{
   event: EventDetail;

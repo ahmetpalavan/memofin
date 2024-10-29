@@ -1,11 +1,10 @@
 'use client';
 
+import { DialogProps } from '@radix-ui/react-dialog';
 import { useState } from 'react';
 import { EventDetail } from '~/lib/prisma/validators/event-validator';
-import { CreateEventForm } from '../form/create-event-form';
-import { Dialog, DialogContent, DialogTitle } from '../ui/dialog';
-import { DialogProps } from '@radix-ui/react-dialog';
 import { UpdateEventForm } from '../form/update-event-form';
+import { Dialog, DialogContent, DialogTitle } from '../ui/dialog';
 
 type Props = {
   event: EventDetail;

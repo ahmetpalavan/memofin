@@ -30,12 +30,12 @@ export const useConfirm: ConfirmHook = (title: string, message: string): [() => 
   const handleCancel = useCallback(() => {
     promise?.resolve(false);
     handleClose(false);
-  }, [handleClose]);
+  }, [handleClose, promise]);
 
   const handleConfirm = useCallback(() => {
     promise?.resolve(true);
     handleClose(true);
-  }, [handleClose]);
+  }, [handleClose, promise]);
 
   const ConfirmDialog = () => (
     <Dialog open={!!promise} onOpenChange={handleClose}>

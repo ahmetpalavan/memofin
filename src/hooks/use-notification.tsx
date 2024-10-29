@@ -27,7 +27,7 @@ export const useNotification = ({ initialNotifications }: Params) => {
     } else {
       setHasMoreNotifications(false);
     }
-  }, []);
+  }, [getUserNotifications, notifications]);
 
   const markNotificationAsRead = (notification: NotificationDetail) => {
     if (!notification.read) {

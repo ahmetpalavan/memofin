@@ -61,7 +61,7 @@ export const BookmarkedEventButton = ({ event }: Props) => {
   const handleBookmark = useCallback(() => {
     performBookmark();
     toggleClientBookmark();
-  }, []);
+  }, [performBookmark, toggleClientBookmark]);
 
   if (isParticipantView) {
     return null;

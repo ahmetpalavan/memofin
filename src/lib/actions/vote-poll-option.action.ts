@@ -1,9 +1,9 @@
 'use server';
 
-import { votePollOptionSchema, VotePollSchema } from '~/validation/poll-schema';
-import { actionClient } from './safe.action';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+import { votePollOptionSchema } from '~/validation/poll-schema';
 import { prisma } from '../prisma/client';
+import { actionClient } from './safe.action';
 
 export const votePollOption = actionClient.schema(votePollOptionSchema).action(async ({ parsedInput: { optionIndex, pollId } }) => {
   const user = await getKindeServerSession().getUser();

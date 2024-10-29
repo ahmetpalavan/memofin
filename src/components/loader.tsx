@@ -1,7 +1,7 @@
 import BeatLoader from 'react-spinners/BeatLoader';
-import { Skeleton } from './ui/skeleton';
+import { green } from 'tailwindcss/colors';
 import { cn, PropsWithClassName } from '~/lib/utils';
-import { blue, green } from 'tailwindcss/colors';
+import { Skeleton } from './ui/skeleton';
 
 export const Loader = () => {
   return (

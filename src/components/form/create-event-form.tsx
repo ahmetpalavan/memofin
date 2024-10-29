@@ -47,9 +47,12 @@ export const CreateEventForm = ({ onSuccess }: Props) => {
     onSettled: () => form.reset(),
   });
 
-  const onSubmit = useCallback(async (values: CreateEventSchema) => {
-    execute(values);
-  }, []);
+  const onSubmit = useCallback(
+    async (values: CreateEventSchema) => {
+      execute(values);
+    },
+    [execute]
+  );
 
   const isDisabled = isExecuting || form.formState.isSubmitting;
 

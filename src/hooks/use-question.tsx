@@ -43,7 +43,7 @@ export const useQuestionPinned = ({ isPinned: initialPinned, questionId }: Props
       questionId,
       isPinned: !isPinned,
     });
-  }, []);
+  }, [execute, questionId, isPinned]);
 
   return { isPinned, togglePin, isExecuting };
 };
@@ -51,7 +51,7 @@ export const useQuestionPinned = ({ isPinned: initialPinned, questionId }: Props
 export const useToggleResolved = ({ questionId, isResolved: initialIsResolved }: { questionId: Question['id']; isResolved: boolean }) => {
   const [isResolved, setIsResolved] = useState(initialIsResolved);
 
-  const { execute, isExecuting } = useAction(updateQuestionAction, {
+  const { execute } = useAction(updateQuestionAction, {
     onSuccess: () => {
       console.log('Success resolved');
       toast({
@@ -78,7 +78,7 @@ export const useToggleResolved = ({ questionId, isResolved: initialIsResolved }:
       questionId,
       isResolved: !isResolved,
     });
-  }, []);
+  }, [execute, questionId, isResolved]);
 
   return { isResolved, toggleResolved };
 };
@@ -111,7 +111,7 @@ export const useVote = ({ questionId, totalVotes: initialVotes, upvotes }: VoteP
       isUpvoted: upvotes.some((u) => u.authorId === user?.id),
       totalVotes: initialVotes,
     });
-  }, [upvotes, user]);
+  }, [upvotes, user, initialVotes]);
 
   const toggleClientVote = useCallback(() => {
     setClientState(({ isUpvoted, totalVotes }) => ({
@@ -119,11 +119,6 @@ export const useVote = ({ questionId, totalVotes: initialVotes, upvotes }: VoteP
       totalVotes: isUpvoted ? totalVotes - 1 : totalVotes + 1,
     }));
   }, []);
-
-  const handleVote = useCallback(() => {
-    toggleClientVote();
-    performVote();
-  }, [toggleClientVote]);
 
   const performVote = useCallback(
     debounce(
@@ -135,6 +130,11 @@ export const useVote = ({ questionId, totalVotes: initialVotes, upvotes }: VoteP
     ),
     [questionId]
   );
+
+  const handleVote = useCallback(() => {
+    toggleClientVote();
+    performVote();
+  }, [toggleClientVote, performVote]);
 
   return { isUpvoted, totalVotes, handleVote, toggleClientVote };
 };

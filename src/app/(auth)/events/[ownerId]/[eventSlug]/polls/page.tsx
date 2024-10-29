@@ -7,7 +7,7 @@ import { ClosedPollsList } from '~/components/closed-polls-list';
 import { NewPollDialog } from '~/components/dialog/new-poll-dialog';
 import { NoContent } from '~/components/illustrations';
 import { PollsTabNavigation } from '~/components/layout/polls-tab-navigation';
-import { ClosedPoll, LivePoll } from '~/components/live-poll';
+import { LivePoll } from '~/components/live-poll';
 import { Loader } from '~/components/loader';
 import { Button } from '~/components/ui/button';
 import { getEventClosedPolls } from '~/lib/server/get-event-closed-polls';

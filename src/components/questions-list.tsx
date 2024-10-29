@@ -5,6 +5,7 @@ import { useAction } from 'next-safe-action/hooks';
 import { useSearchParams } from 'next/navigation';
 import { useCallback, useState } from 'react';
 import { getEventOpenQuestionsAction } from '~/lib/actions/get-event-open-question.action';
+import { getEventResolvedQuestionsAction } from '~/lib/actions/get-event-resolved-question.action';
 import { QuestionDetail } from '~/lib/prisma/validators/question-validator';
 import { cn, PropsWithClassName } from '~/lib/utils';
 import { QuestionsOrderBy } from '~/utils/question-utils';
@@ -12,8 +13,6 @@ import { CreateQuestionForm } from './form/create-question-form';
 import { NoContent } from './illustrations';
 import { InfiniteScrollList } from './infinite-scroll-list';
 import { Question } from './question';
-import { getEventResolvedQuestions } from '~/lib/server/get-event-resolved-questions';
-import { getEventResolvedQuestionsAction } from '~/lib/actions/get-event-resolved-question.action';
 
 type Props = PropsWithClassName<{
   initialQuestions: QuestionDetail[];

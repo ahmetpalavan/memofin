@@ -38,3 +38,5 @@ export const TextareaWithCounter = forwardRef<HTMLTextAreaElement, Props>(
     );
   }
 );
+
+TextareaWithCounter.displayName = 'TextareaWithCounter';
