@@ -1,4 +1,5 @@
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+import { UserAvatar } from '~/components/user-avatar';
 import { getUserInfo } from '~/lib/server/get-user-info';
 import { onlyDateFormatter } from '~/utils/date-utils';
 
@@ -12,7 +13,9 @@ const AccountPage = async () => {
   }
 
   return (
-    <div className='w-full h-full px-4 py-2'>
+    <div className='w-full h-full px-4 py-2 flex flex-col items-center justify-center'>
+      <UserAvatar color={user.color} displayName={user.name} className='w-16 h-16 rounded-full' />
+
       <h1 className='text-2xl font-bold mt-3'>{user.name}</h1>
 
       <time className='text-xs font-bold text-muted-foreground' suppressHydrationWarning>
