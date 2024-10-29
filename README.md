@@ -11,7 +11,7 @@ Memofin is a web application designed to facilitate knowledge sharing and commun
 - **Search Functionality:** Quickly find content with search and filtering.
 - **Responsive Design:** Optimized for desktop and mobile platforms.
 - **Form Validation:** Robust form handling with React Hook Form and Zod.
-- **Interactive UI Components:** Enhanced user experience with ShadcnUI and Tailwind CSS.
+- **Interactive UI Components:** Enhanced user experience with Shadcn and Tailwind CSS.
 
 ## Technologies Used
 
@@ -21,7 +21,7 @@ Memofin is a web application designed to facilitate knowledge sharing and commun
 - **Supabase:** Backend as a Service for real-time data and authentication.
 - **Kinde Auth Next.js:** Secure user authentication solution.
 - **React Query (TanStack Query):** Efficient data fetching and state management.
-- **ShadcnUI:** Accessible and customizable UI components.
+- **Shadcn:** Accessible and customizable UI components.
 - **Tailwind CSS:** Utility-first CSS framework for rapid UI development.
 - **React Hook Form:** Performant form state management and validation.
 - **Zod:** Type-safe schema validation.
