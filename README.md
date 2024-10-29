@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Memofin
 
-## Getting Started
+Memofin is a web application designed to facilitate knowledge sharing and communication among teams and individuals. It enhances collaboration and productivity by enabling users to create, share, and organize notes.
 
-First, run the development server:
+## Project Features
+
+- **Note Creation:** Create and format notes using a rich text editor.
+- **Sharing and Collaboration:** Share notes and collaborate in real-time.
+- **User Authentication:** Secure login and session management with Kinde Auth.
+- **Real-Time Data:** Instant updates across devices with Supabase.
+- **Search Functionality:** Quickly find content with search and filtering.
+- **Responsive Design:** Optimized for desktop and mobile platforms.
+- **Form Validation:** Robust form handling with React Hook Form and Zod.
+- **Interactive UI Components:** Enhanced user experience with Radix UI and Tailwind CSS.
+
+## Technologies Used
+
+- **Next.js:** React framework for server-side rendering and static site generation.
+- **TypeScript:** Strongly-typed JavaScript for improved code quality and maintainability.
+- **Prisma:** Next-generation ORM for database interactions.
+- **Supabase:** Backend as a Service for real-time data and authentication.
+- **Kinde Auth Next.js:** Secure user authentication solution.
+- **React Query (TanStack Query):** Efficient data fetching and state management.
+- **Radix UI:** Accessible and customizable UI components.
+- **Tailwind CSS:** Utility-first CSS framework for rapid UI development.
+- **React Hook Form:** Performant form state management and validation.
+- **Zod:** Type-safe schema validation.
+- **Lucide React:** Icon library for React applications.
+- **React Spinners:** Collection of loading spinners.
+- **Faker.js:** Fake data generation for testing.
+- **Clsx:** Utility for conditionally constructing `className` strings.
+
+## Installation and Setup
+
+Follow these steps to set up and run Memofin locally.
+
+### Install Dependencies
+
+First, install the necessary dependencies:
+
+```bash
+npm install
+
+```
+
+### Start Development Server
+
+To run the application locally:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+This command will start the development server and open the application in your browser at http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Build for Production
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+To build the application for production:
 
-## Learn More
+```bash
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Commands
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **dev**: Starts the development server.
+- **build**: Builds the application for production.
+- **start**: Starts the application in production mode.
+- **lint**: Runs ESLint to check the code.
+- **prisma migrate**: Runs the database migrations.
+- **prisma db seed**: Runs custom database scripts.
