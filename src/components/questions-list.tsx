@@ -26,7 +26,6 @@ type Props = PropsWithClassName<{
 export const OpenQuestions = ({ initialQuestions, ownerId, eventSlug, orderBy, questionId, className }: Props) => {
   const [questions, setQuestions] = useState<QuestionDetail[]>(initialQuestions);
   const searchParams = useSearchParams();
-  console.log('🚀 ~ OpenQuestions ~ searchParams:', searchParams);
 
   const hasFilters = !!questionId;
 

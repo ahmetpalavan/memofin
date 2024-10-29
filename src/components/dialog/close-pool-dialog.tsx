@@ -10,7 +10,7 @@ import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader }
 import { cn } from '~/lib/utils';
 import { buttonVariants } from '../ui/button';
 import { useAction } from 'next-safe-action/hooks';
-import { closePoll } from '~/lib/actions/close-poll.action';
+import { closePollAction } from '~/lib/actions/close-poll.action';
 import { toast } from '~/hooks/use-toast';
 
 type Props = {
@@ -19,7 +19,7 @@ type Props = {
 } & AlertDialogProps;
 
 export const ClosePollDialog = ({ pollId, onSucces: handleSuccess, ...props }: Props) => {
-  const { execute, isExecuting } = useAction(closePoll, {
+  const { execute, isExecuting } = useAction(closePollAction, {
     onError: (err) => {
       toast({
         title: 'Failed to close poll',
