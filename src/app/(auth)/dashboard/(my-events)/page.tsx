@@ -1,10 +1,9 @@
-import React from 'react';
+import { HydrationBoundary, QueryClient, dehydrate } from '@tanstack/react-query';
+import { Plus } from 'lucide-react';
+import { NewEventDialog } from '~/components/dialog/new-event-dialog';
+import { EventsList } from '~/components/events-list';
 import { ScrollArea } from '~/components/ui/scroll-area';
 import { getUserEvents } from '~/lib/server/get-user-events';
-import { Plus } from 'lucide-react';
-import { EventsList } from '~/components/events-list';
-import { QueryClient, HydrationBoundary, dehydrate } from '@tanstack/react-query';
-import { NewEventDialog } from '~/components/dialog/new-event-dialog';
 
 const MyEventsPage = async () => {
   const queryClient = new QueryClient();
